@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agar.io Clone</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #endScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-size: 2em;
+      z-index: 10;
+      display: none;
+    }
+
+    #playAgain {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 1em;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #playAgain:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <div id="endScreen">
+    <div id="endMessage"></div>
+    <button id="playAgain">Play Again</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const endScreen = document.getElementById('endScreen');
+    const endMessage = document.getElementById('endMessage');
+    const playAgain = document.getElementById('playAgain');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Player variables
+    const player = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      radius: 20,
+      color: 'blue',
+      speed: 2,
+      dx: 0,
+      dy: 0,
+    };
+
+    // AI opponents
+    const aiBots = [
+      { x: canvas.width / 4, y: canvas.height / 4, radius: 20, color: 'red', speed: 1.5, targetX: 0, targetY: 0 },
+      { x: (canvas.width / 4) * 3, y: canvas.height / 4, radius: 20, color: 'green', speed: 1.5, targetX: 0, targetY: 0 },
+      { x: canvas.width / 2, y: (canvas.height / 4) * 3, radius: 20, color: 'purple', speed: 1.5, targetX: 0, targetY: 0 },
+    ];
+
+    // Food variables
+    const foodCount = 100;
+    const foodArray = [];
+
+    let gameRunning = true;
+
+    // Utility functions
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function generateFood() {
+      for (let i = 0; i < foodCount; i++) {
+        foodArray.push({
+          x: random(0, canvas.width),
+          y: random(0, canvas.height),
+          radius: 5,
+          color: `rgb(${random(100, 255)}, ${random(100, 255)}, ${random(100, 255)})`,
+        });
+      }
+    }
+
+    function drawCircle(x, y, radius, color) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function handleCollisions(entity) {
+      for (let i = foodArray.length - 1; i >= 0; i--) {
+        const food = foodArray[i];
+        const dx = entity.x - food.x;
+        const dy = entity.y - food.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < entity.radius + food.radius) {
+          foodArray.splice(i, 1); // Remove the food
+          entity.radius += 1;    // Increase entity size
+        }
+      }
+    }
+
+    function updatePlayer() {
+      player.x += player.dx * player.speed;
+      player.y += player.dy * player.speed;
+
+      // Keep player within bounds
+      if (player.x - player.radius < 0) player.x = player.radius;
+      if (player.x + player.radius > canvas.width) player.x = canvas.width - player.radius;
+      if (player.y - player.radius < 0) player.y = player.radius;
+      if (player.y + player.radius > canvas.height) player.y = canvas.height - player.radius;
+    }
+
+    function updateAI(bot) {
+      const dx = bot.targetX - bot.x;
+      const dy = bot.targetY - bot.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > 1) {
+        bot.x += (dx / distance) * bot.speed;
+        bot.y += (dy / distance) * bot.speed;
+      } else {
+        bot.targetX = random(0, canvas.width);
+        bot.targetY = random(0, canvas.height);
+      }
+    }
+
+    function endGame(message) {
+      gameRunning = false;
+      endScreen.style.display = 'flex';
+      endMessage.textContent = message;
+    }
+
+    function checkGameOver() {
+      for (let i = aiBots.length - 1; i >= 0; i--) {
+        const bot = aiBots[i];
+        const dx = player.x - bot.x;
+        const dy = player.y - bot.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < player.radius + bot.radius) {
+          if (player.radius > bot.radius) {
+            player.radius += bot.radius / 2; // Grow the player
+            aiBots.splice(i, 1); // Remove eaten bot
+          } else {
+            endGame('You Lose!');
+            return;
+          }
+        }
+      }
+
+      if (aiBots.length === 0) {
+        endGame('You Win!');
+      }
+    }
+
+    function update() {
+      if (!gameRunning) return;
+
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw player
+      drawCircle(player.x, player.y, player.radius, player.color);
+
+      // Draw AI bots
+      aiBots.forEach(bot => drawCircle(bot.x, bot.y, bot.radius, bot.color));
+
+      // Draw food
+      foodArray.forEach(food => drawCircle(food.x, food.y, food.radius, food.color));
+
+      // Update entities
+      updatePlayer();
+      aiBots.forEach(updateAI);
+
+      // Handle collisions
+      handleCollisions(player);
+      aiBots.forEach(handleCollisions);
+
+      // Check game over
+      checkGameOver();
+
+      requestAnimationFrame(update);
+    }
+
+    // Control player direction
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') { player.dy = -1; player.dx = 0; }
+      if (e.key === 'ArrowDown') { player.dy = 1; player.dx = 0; }
+      if (e.key === 'ArrowLeft') { player.dx = -1; player.dy = 0; }
+      if (e.key === 'ArrowRight') { player.dx = 1; player.dy = 0; }
+    });
+
+    // Restart the game
+    playAgain.addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    // Resize canvas on window resize
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Initialize
+    generateFood();
+    update();
+  </script>
+</body>
+</html>
