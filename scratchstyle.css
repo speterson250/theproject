@@ -1,0 +1,106 @@
+h2{
+    color: blanchedalmond;
+    font-size: 30pt;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+}
+p{
+    font-size: 16pt;
+    color: blanchedalmond;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    line-height: 35px;
+}
+h1{
+    font-size: 40pt;
+    color: blanchedalmond;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+body{
+    background-color: gray;
+}
+.container{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+.uldiv{
+    color: blanchedalmond;
+    font-size: 24pt;
+    padding: 30px;
+    border: 100px;
+    margin: 50px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.tableauPlaceholder{
+    width: 900px !important;
+    height: auto !important;
+    margin-left:17%;
+    margin-bottom: 15px;
+}
+h3{
+    text-align: center;
+    color: blanchedalmond;
+    font-size: 30pt;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.anchor{
+    font-size: 16pt;
+    text-align: center;
+}
+/* Navigation bar styling */
+nav {
+    color: antiquewhite;
+    background: linear-gradient(90deg, #000000, #ffffff); /* Gradient with gray colors */
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: start; /* Align items to the left */
+    border-bottom: 2px solid #4a4a4a;
+  }
+  /* Navigation tabs styling */
+  nav a {
+    color: antiquewhite;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-right: 15px; /* Space between tabs */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth effects */
+  }
+  /* Hover effect for tabs */
+  nav a:hover {
+    background-color: #4a4a4a;
+    transform: scale(1.1); /* Slight zoom effect */
+  }
+  
+  /* Specific styling for "Navigation" */
+  nav a.navigation {
+    color: #f0e68c; /* Highlighted color for differentiation */
+    font-style: italic;
+  }
+  nav ul {
+    list-style: none; /* Removes bullet points */
+    display: flex; /* Arranges items in a row */
+    justify-content: flex-end; /* Aligns items to the left */
+    gap: 10px; /* Adds space between items */
+    margin: 0; /* Removes default margin */
+    padding: 30px; /* Removes default padding */
+}
+nav li {
+    display: inline; /* Ensures the items remain inline */
+}
+h4{
+    color: blanchedalmond;
+    font-size: 30pt;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    padding: 0;
+}  
+.uldiv{
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
